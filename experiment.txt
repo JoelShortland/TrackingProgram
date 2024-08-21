@@ -1,0 +1,15 @@
+Free Mode
+py -3 .\generaltracker.py
+
+Bouncing Ball
+py -3 .\balltracker.py -v '.\Test Videos\PushTest1.mp4'
+
+Pendulum
+py -3 .\pendulumtracker.py -v '.\Test Videos\Simple_Pendulum.mp4'
+
+Centripetal Motion
+py -3 .\circletracker.py -v '.\Test Videos\Centripetal_Motion.mp4'
+
+Controls
+c - clears all previous tracking and images
+q - quits the app
