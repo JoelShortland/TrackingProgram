@@ -15,8 +15,8 @@ Functionally, there is no difference between the video and webcam modes of opera
 
 ## Controls
 The controls for all application modes are identical.
-c - clears all previous tracking and images
-q - stop current action (note: one q stops the video/webcam feed and displays graphs, a second q closes the graphs and terminates the program).
+- c - clears all previous tracking and images
+- q - stop current action (note: one q stops the video/webcam feed and displays graphs, a second q closes the graphs and terminates the program).
 
 ## Free Mode
 This mode uses no task-specific filtering. It was designed for general tasks, but doesn't work particularly well and wasn't used in the thesis.
