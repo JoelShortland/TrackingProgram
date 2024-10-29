@@ -57,7 +57,7 @@ except:
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space, then initialize the
 # list of tracked points
-greenLower = (40, 30, 0) #vmin = 20?
+greenLower = (40, 30, 0) 
 greenUpper = (100, 255, 255)
 
 
@@ -180,7 +180,7 @@ while True:
         #Movement calculations
         pixel_size = ball_size/radius #length of each pixel at the ball in metres
         
-        average_frames = 1
+        average_frames = 3
         (x_filtered, y_filtered) = get_x_y_averages(position_tracker, average_frames)
         filtered_position_tracker.append((x_filtered, y_filtered))
 
@@ -233,26 +233,16 @@ while True:
                 x_accel = np.average(reject_outliers(np.array(x_accel_range)))
                 y_accel = np.average(reject_outliers(np.array(y_accel_range)))
 
-                #Ball specific acceleration handling
-                total_accel = math.sqrt(x_accel**2+y_accel**2)
-                if ((total_accel < 1.5 and total_speed > 1) or y_accel > 1):
-                    y_accel = 9.8
-                    x_accel = 0
-                    total_accel = 9.8
+                               
+            
 
-                #For spikes:
-                if (y_accel < -5):
-                    y_accel = min(y_accel_range)
-
-                
 
             acceleration_tracker.append((x_accel, y_accel))
 
         total_speed = math.sqrt(x_speed**2+y_speed**2)
         total_accel = math.sqrt(x_accel**2+y_accel**2)
 
-        
-
+    
         #Check
         print("Time: " +str(round(timestamps[len(timestamps)-1], 3)) + ", velocity: " + str(total_speed) + ", accel: " + str(total_accel))
 

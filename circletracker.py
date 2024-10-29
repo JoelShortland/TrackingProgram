@@ -62,7 +62,7 @@ greenLower = (20, 50, 130) #vn = 20?
 greenUpper = (40, 255, 245)
 
 pts = deque(maxlen=buffer)
-echo_draw = False
+echo_draw = True
 naive_velocity_draw = True
 
 # Get webcam going
@@ -87,7 +87,7 @@ current_frame_time = -1
 
 #Need to set max/min values for detection, can be swapped depending on camera. 
 min_radius = 10
-min_draw_time = 3
+min_draw_time = 0
 
 #Trackers
 timestamps = []
@@ -252,7 +252,7 @@ while True:
 
         #Do the Drawing handling
         if echo_draw:
-            if (since_last_draw > min_draw_time or math.sqrt((draw_queue[len(draw_queue)-1][0]-x)**2+(draw_queue[len(draw_queue)-1][1]-y)**2) > min_draw_distance):
+            if (since_last_draw >= min_draw_time or math.sqrt((draw_queue[len(draw_queue)-1][0]-x)**2+(draw_queue[len(draw_queue)-1][1]-y)**2) > min_draw_distance):
                 if naive_velocity_draw:    
                     x_speed = x_naive_speed
                     y_speed = y_naive_speed

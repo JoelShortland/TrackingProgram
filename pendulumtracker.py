@@ -45,14 +45,14 @@ def reject_outliers(data, m = 2.):
 ap = argparse.ArgumentParser()
 ap.add_argument("-v", "--video",
     help="path to the (optional) video file")
-ap.add_argument("-b", "--buffer", type=int, default=30,
+ap.add_argument("-b", "--buffer", type=int, default=10,
     help="max buffer size")
 args = vars(ap.parse_args())
 
 try:
     buffer = args["buffer"]
 except:
-    buffer = 30
+    buffer = 10
 
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space, then initialize the
@@ -63,7 +63,7 @@ greenUpper = (40, 255, 245)
 
 
 pts = deque(maxlen=buffer)
-echo_draw = False
+echo_draw = True
 naive_velocity_draw = True
 
 # Get webcam going
@@ -88,7 +88,7 @@ current_frame_time = -1
 
 #Need to set max/min values for detection, can be swapped depending on camera. 
 min_radius = 10
-min_draw_time = 3
+min_draw_time = 10
 
 #Trackers
 timestamps = []
@@ -103,7 +103,7 @@ radius_tracker = []
 draw_queue = []
 since_last_draw = 99999
 min_draw_distance = 10000
-pendulum_centre = (1000, 100)
+pendulum_centre = (1100, 100)
 
 
 
@@ -156,7 +156,7 @@ while True:
     center = None
 
     #Draw pendulum centre
-    cv2.circle(frame, pendulum_centre, 20, (0, 0, 255), -1)
+    cv2.circle(frame, pendulum_centre, 20, (255, 0, 0), -1)
 
     # only proceed if at least one contour was found
     if len(cnts) > 0:
@@ -233,8 +233,11 @@ while True:
 
                 #Pendulum, need to rescale to point at pendulum_centre
                 total_accel = math.sqrt(x_accel**2+y_accel**2)
+                
+                temp_y_centre = pendulum_centre[1]+abs(x-pendulum_centre[0])*2
+                print()
 
-                angle = math.atan2(pendulum_centre[1]-y,pendulum_centre[0]-x)
+                angle = math.atan2(temp_y_centre-y,pendulum_centre[0]-x)
                 x_accel = math.cos(angle) * total_accel
                 y_accel = math.sin(angle) * total_accel
 
@@ -271,7 +274,7 @@ while True:
                     y_speed = y_naive_speed
         
                 cv2.arrowedLine(frame, (int(x), int(y)), (int(x+x_speed*1000), int(y+y_speed*1000)), (0, 255,  0), thickness=5) #Velocity
-                cv2.arrowedLine(frame, (int(x), int(y)), (int(x+x_accel*1000), int(y+y_accel*1000)), (0, 0,  255), thickness=5) #Acce
+                cv2.arrowedLine(frame, (int(x), int(y)), (int(x+x_accel*100), int(y+y_accel*100)), (0, 0,  255), thickness=5) #Acce
                 
 
     #No ball detected, handle the timestamp.                
@@ -297,9 +300,9 @@ while True:
             x_accel = queue_item[4]
             y_accel = queue_item[5]
             radius = queue_item[6]
-            cv2.arrowedLine(frame, (int(x), int(y)), (int(x+x_speed*100), int(y+y_speed*100)), (0, 255,  0), thickness=3) #Velocity
-            cv2.arrowedLine(frame, (int(x), int(y)), (int(x+x_accel*100), int(y+y_accel*100)), (0, 0,  255), thickness=3) #Acce
-            cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
+            #cv2.arrowedLine(frame, (int(x), int(y)), (int(x+x_speed*2000), int(y+y_speed*2000)), (0, 255,  0), thickness=3) #Velocity
+            #cv2.arrowedLine(frame, (int(x), int(y)), (int(x+x_accel*1000), int(y+y_accel*1000)), (0, 0,  255), thickness=3) #Acce
+            #cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
 
     
     # show the frame to our screen
@@ -307,7 +310,7 @@ while True:
     if not args.get("video", False):
         key = cv2.waitKey(1) & 0xFF
     else:
-        key = cv2.waitKey(int(1000/35)) & 0xFF
+        key = cv2.waitKey(int(10000/35)) & 0xFF
 
     # if the 'q' key is pressed, stop the loop
     if key == ord("q"):
