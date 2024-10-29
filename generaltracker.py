@@ -57,7 +57,7 @@ except:
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space, then initialize the
 # list of tracked points
-greenLower = (40, 30, 0) #vmin = 20?
+greenLower = (40, 30, 0) 
 greenUpper = (100, 255, 255)
 
 
@@ -135,13 +135,12 @@ while True:
 
     # resize the frame, blur it, and convert it to the HSV
     # color space
-    frame = imutils.resize(frame, width=1920, height=1080) #My webcam is 1920x1080
+    frame = imutils.resize(frame, width=1920, height=1080) 
     blurred = cv2.GaussianBlur(frame, (11, 11), 0)
     hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
     
-    # construct a mask for the color "green", then perform
-    # a series of dilations and erosions to remove any small
-    # blobs left in the mask
+    # construct a mask for the color "green", then perform a series of dilations and 
+    # erosions to remove any small blobs left in the mask
     mask = cv2.inRange(hsv, greenLower, greenUpper)
     mask = cv2.erode(mask, None, iterations=2)
     mask = cv2.dilate(mask, None, iterations=2)
@@ -166,9 +165,8 @@ while True:
 
         # only proceed if the radius meets a minimum size
         if radius > min_radius:
-            # draw the circle and centroid on the frame, then update the list of tracked points
-            cv2.circle(frame, (int(x), int(y)), int(radius),
-                (0, 255, 255), 2)
+            # Draw the circle and its centre on the frame
+            cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
             cv2.circle(frame, center, 5, (0, 0, 255), -1)
             position_tracker.append((x, y))
             
@@ -232,8 +230,7 @@ while True:
                 #print(y_accel_range)
                 x_accel = np.average(reject_outliers(np.array(x_accel_range)))
                 y_accel = np.average(reject_outliers(np.array(y_accel_range)))
-
-
+                
 
             acceleration_tracker.append((x_accel, y_accel))
 
@@ -267,7 +264,7 @@ while True:
                     y_speed = y_naive_speed
         
                 cv2.arrowedLine(frame, (int(x), int(y)), (int(x+x_speed*1000), int(y+y_speed*1000)), (0, 255,  0), thickness=5) #Velocity
-                cv2.arrowedLine(frame, (int(x), int(y)), (int(x+x_accel*100), int(y+y_accel*100)), (0, 0,  255), thickness=5) #Acce
+                cv2.arrowedLine(frame, (int(x), int(y)), (int(x+x_accel*100), int(y+y_accel*100)), (0, 0,  255), thickness=5)   #Acceleration
                 
 
     #No ball detected, handle the timestamp.                
@@ -294,7 +291,7 @@ while True:
             y_accel = queue_item[5]
             radius = queue_item[6]
             cv2.arrowedLine(frame, (int(x), int(y)), (int(x+x_speed*100), int(y+y_speed*100)), (0, 255,  0), thickness=3) #Velocity
-            cv2.arrowedLine(frame, (int(x), int(y)), (int(x+x_accel*10), int(y+y_accel*10)), (0, 0,  255), thickness=3) #Acce
+            cv2.arrowedLine(frame, (int(x), int(y)), (int(x+x_accel*10), int(y+y_accel*10)), (0, 0,  255), thickness=3) #Acceleration
             cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
 
     

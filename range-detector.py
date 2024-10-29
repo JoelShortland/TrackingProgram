@@ -5,7 +5,7 @@
 #
 # (python) range-detector --filter RGB --image /path/to/image.png
 
-#py -3 range-detector.py --filter HSV --image colourframe.png
+# py -3 range-detector.py --filter HSV --image colourframe.png
 # or
 # py -3  range-detector.py --filter HSV --webcam
 
