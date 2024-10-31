@@ -180,7 +180,7 @@ while True:
         #Movement calculations
         pixel_size = ball_size/radius #length of each pixel at the ball in metres
         
-        average_frames = 3
+        average_frames = 2
         (x_filtered, y_filtered) = get_x_y_averages(position_tracker, average_frames)
         filtered_position_tracker.append((x_filtered, y_filtered))
 
@@ -233,7 +233,17 @@ while True:
                 x_accel = np.average(reject_outliers(np.array(x_accel_range)))
                 y_accel = np.average(reject_outliers(np.array(y_accel_range)))
 
-                               
+                #Ball specific acceleration handling
+                total_accel = math.sqrt(x_accel**2+y_accel**2)
+                if ((total_accel < 2 and total_speed > 1) or y_accel > 1):
+                    y_accel = 9.8
+                    x_accel = 0
+                    total_accel = 9.8
+
+                #For spikes:
+                if (y_accel < -5): # If the filtered value is overwhelmingly upwards, the ball just bounced.
+                    print(y_accel_range)
+                    y_accel = min(y_accel_range)                
             
 
 

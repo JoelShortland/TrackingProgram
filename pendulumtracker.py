@@ -63,7 +63,7 @@ greenUpper = (40, 255, 245)
 
 
 pts = deque(maxlen=buffer)
-echo_draw = True
+echo_draw = False
 naive_velocity_draw = True
 
 # Get webcam going
@@ -104,7 +104,7 @@ draw_queue = []
 since_last_draw = 99999
 min_draw_distance = 10000
 pendulum_centre = (1100, 100)
-
+max_x_diff = 0
 
 
 # Now we start the tracking loop.
@@ -180,8 +180,7 @@ while True:
             
         else:
             print("Ball detected but too small, radius: " + str(radius))
-            position_tracker.append((0, 0))
-       
+            position_tracker.append((0, 0))  
 
         #Movement calculations
         pixel_size = ball_size/radius #length of each pixel at the ball in metres
@@ -231,15 +230,31 @@ while True:
                 x_accel = np.average(reject_outliers(np.array(x_accel_range)))
                 y_accel = np.average(reject_outliers(np.array(y_accel_range)))
 
-                #Pendulum, need to rescale to point at pendulum_centre
-                total_accel = math.sqrt(x_accel**2+y_accel**2)
-                
-                temp_y_centre = pendulum_centre[1]+abs(x-pendulum_centre[0])*2
-                print()
 
+                #Pendulum, need to change acceleration to point in the correct direction. 
+                #First, we determine how far we are from the x direction at a maximum, to scale as the pendulum slows
+                if len(filtered_position_tracker )< 40:
+                    current_range = filtered_position_tracker
+                else:
+                    current_range = filtered_position_tracker[-40:]
+                current_x_range = []
+                for val in current_range:
+                    current_x_range.append(abs(val[0]-pendulum_centre[0]))
+                if max(current_x_range) > max_x_diff:
+                    max_x_diff = max(current_x_range)
+                slowing_factor = ((abs(x-pendulum_centre[0]))/max_x_diff)*2 #Largely found through trial and error. Works best at inital 45-60 degree angles. 
+
+                #First calculate the length of the vector
+                total_accel = math.sqrt(x_accel**2+y_accel**2) 
+                
+                #Then, find the y of the focal point. X remains unchanged, as we treat it as a 'focal axis'. Scale by a factor of how much the pendulum has slowed.
+                temp_y_centre = pendulum_centre[1]+abs(x-pendulum_centre[0])  * 2 * slowing_factor
+
+                #Adjust the vector, maintain the filtered size. 
                 angle = math.atan2(temp_y_centre-y,pendulum_centre[0]-x)
                 x_accel = math.cos(angle) * total_accel
                 y_accel = math.sin(angle) * total_accel
+
 
             acceleration_tracker.append((x_accel, y_accel))
 
@@ -310,7 +325,7 @@ while True:
     if not args.get("video", False):
         key = cv2.waitKey(1) & 0xFF
     else:
-        key = cv2.waitKey(int(10000/35)) & 0xFF
+        key = cv2.waitKey(int(1000/35)) & 0xFF
 
     # if the 'q' key is pressed, stop the loop
     if key == ord("q"):

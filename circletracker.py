@@ -102,7 +102,7 @@ radius_tracker = []
 draw_queue = []
 since_last_draw = 99999
 min_draw_distance = 10000
-pendulum_centre = (1100, 500)
+circle_centre = (1100, 500)
 
 
 
@@ -155,7 +155,7 @@ while True:
     center = None
 
     #Draw pendulum centre
-    cv2.circle(frame, pendulum_centre, 20, (0, 0, 255), -1)
+    cv2.circle(frame, circle_centre, 20, (0, 0, 255), -1)
 
     # only proceed if at least one contour was found
     if len(cnts) > 0:
@@ -230,10 +230,10 @@ while True:
                 x_accel = np.average(reject_outliers(np.array(x_accel_range)))
                 y_accel = np.average(reject_outliers(np.array(y_accel_range)))
 
-                #Pendulum, need to rescale to point at pendulum_centre
+                #Need to rescale acceleration to point at circle centre
                 total_accel = math.sqrt(x_accel**2+y_accel**2)
 
-                angle = math.atan2(pendulum_centre[1]-y,pendulum_centre[0]-x)
+                angle = math.atan2(circle_centre[1]-y,circle_centre[0]-x)
                 x_accel = math.cos(angle) * total_accel
                 y_accel = math.sin(angle) * total_accel
 
